@@ -1,20 +1,18 @@
 import easyocr
+import re
 
-reader=easyocr.Reader(['en'])
-result=reader.readtext('receipt.jpeg')
+reader = easyocr.Reader(['en'])
+result = reader.readtext('receipt.jpeg')
 
-for detection in result:
-    print(detection[1])
+full_text = ' '.join([detection[1] for detection in result])
 
+def extract_amount(text):
+    amounts = re.findall(r'\d+[\.,]\d+', text)
+    return amounts
 
-#result is a list of detections
-#each detection has 3 things
-#detection[0]- coordiantes where on the iamge the text was found
-#detection[1]-the actual text
-#detetion[2]-confidence score
+def extract_date(text):
+    dates = re.findall(r'\d{2}[\/\-]\d{2}[\/\-]\d{4}', text)
+    return dates
 
-
-#so for detection in result loops through every piece fo text itm and prints detection[1]...jsut prints the text part
-
-
-
+print("Amounts:", extract_amount(full_text))
+print("Dates:", extract_date(full_text))
