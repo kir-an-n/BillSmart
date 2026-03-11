@@ -28,3 +28,23 @@ def categorize_expense(text):
 print("Amounts:", extract_amount(full_text))
 print("Dates:", extract_date(full_text))
 print("Category:", categorize_expense(full_text))
+
+
+import pandas as pd
+from datetime import datetime
+
+def save_to_csv(amounts,category, dates):
+    data={
+
+        'date': [dates[0] if dates else datetime.now().strftime('%d-%m-%Y')],
+        'amounts': [', '.join(amounts)],
+        'total':[amounts[-1] if amounts else '0'],
+        'category': [category]
+
+    }
+
+    df=pd.DataFrame(data)
+    df.to_csv('expensses.csv', mode='a', header=not pd.io.common.file_exists('expenses.csv'), index=False)
+    print("Saved!")
+    
+save_to_csv(extract_amount(full_text), categorize_expense(full_text), extract_date(full_text))
