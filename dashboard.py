@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import easyocr
 import re
-from main import extract_amount, extract_date, categorize_expense
+from utils import extract_amount, extract_date, categorize_expense
 
 st.title("🧾 BillSmart")
 page = st.sidebar.selectbox("Menu", ["📤 Scan Receipt", "📊 My History"])
