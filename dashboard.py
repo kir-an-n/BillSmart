@@ -32,4 +32,25 @@ if page == "📤 Scan Receipt":
             col1, col2, col3 = st.columns(3)
             col1.metric("Category", category)
             col2.metric("Date", dates[0] if dates else "Today")
-            col3.metric("Total", f"{amounts[-1] if amounts else '0'}")
+            col3.metric("Total", f"₹{amounts[-1] if amounts else '0'}")
+            
+            if st.button("💾 Save to History"):
+                from datetime import datetime
+                data = {
+                    'date': [dates[0] if dates else datetime.now().strftime('%d-%m-%Y')],
+                    'amounts': [', '.join(amounts)],
+                    'total': [amounts[-1] if amounts else '0'],
+                    'category': [category]
+                }
+                df = pd.DataFrame(data)
+                df.to_csv('expenses.csv', mode='a', header=not pd.io.common.file_exists('expenses.csv'), index=False)
+                st.success("Saved to history!")
+                if page == "📊 My History":
+                        st.subheader("My Expense History")
+    
+                try:
+                    df = pd.read_csv('expenses.csv')
+                    st.dataframe(df, use_container_width=True)
+                    st.bar_chart(df.groupby('category')['total'].count())
+                except FileNotFoundError:
+                    st.info("No expenses yet! Go scan your first receipt.")
